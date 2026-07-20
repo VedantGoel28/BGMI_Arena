@@ -8,6 +8,7 @@ import RegisterPage from '../pages/RegisterPage';
 import MatchRegistrationPage from '../pages/MatchRegistrationPage';
 import ConfirmationPage from '../pages/ConfirmationPage';
 import UserDashboard from '../pages/UserDashboard';
+import MatchModesPage from '../pages/MatchModesPage';
 import AdminLogin from '../pages/AdminLogin';
 import AdminDashboard from '../pages/AdminDashboard';
 
@@ -59,6 +60,14 @@ const AppRoutes = (): ReactElement => {
         element={
           <MainLayout>
             <UserDashboard />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/modes"
+        element={
+          <MainLayout>
+            <MatchModesPage />
           </MainLayout>
         }
       />

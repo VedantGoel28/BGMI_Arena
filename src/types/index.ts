@@ -6,6 +6,25 @@ export interface User {
   phone?: string;
 }
 
+export interface RegisterFormData {
+  fullName: string;
+  mobileNumber: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface LoginFormData {
+  mobileNumber: string;
+  password: string;
+}
+
+export interface RegistrationFormData {
+  ign?: string;
+  uid?: string;
+  level: number;
+}
+
 export interface Match {
   id: string;
   title: string;
