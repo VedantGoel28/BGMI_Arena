@@ -15,14 +15,19 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = window.localStorage.getItem('bgmi_user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const login = (nextUser: User): void => {
     setUser(nextUser);
+    window.localStorage.setItem('bgmi_user', JSON.stringify(nextUser));
   };
 
   const logout = (): void => {
     setUser(null);
+    window.localStorage.removeItem('bgmi_user');
   };
 
   const value = useMemo<AuthContextValue>(

@@ -1,10 +1,11 @@
 import { type ReactElement, type FormEvent } from 'react';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Lock, Mail, LoaderCircle, Phone, User } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import FormInput from '../components/FormInput';
+import { useAuth } from '../context/AuthContext';
 import type { RegisterFormData } from '../types';
 
 const initialValues: RegisterFormData = {
@@ -21,6 +22,9 @@ const RegisterPage = (): ReactElement => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
 
   const validations = useMemo(() => {
     const nextErrors: Partial<Record<keyof RegisterFormData, string>> = {};
@@ -58,7 +62,7 @@ const RegisterPage = (): ReactElement => {
 
   const isFormValid = Object.keys(validations).length === 0;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     setErrors(validations);
 
@@ -67,10 +71,37 @@ const RegisterPage = (): ReactElement => {
     }
 
     setIsSubmitting(true);
-    window.setTimeout(() => {
-      console.log('Register form submitted', formData);
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          mobileNumber: formData.mobileNumber,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      navigate('/login', {
+        state: {
+          message: 'Registration successful. Please login with your mobile number and password.',
+        },
+        replace: true,
+      });
+    } catch (error) {
+      setErrors((current) => ({
+        ...current,
+        email: error instanceof Error ? error.message : 'Registration failed',
+      }));
+    } finally {
       setIsSubmitting(false);
-    }, 700);
+    }
   };
 
   const handleChange = (field: keyof RegisterFormData, value: string): void => {

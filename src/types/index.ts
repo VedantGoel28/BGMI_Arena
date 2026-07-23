@@ -1,9 +1,9 @@
 export interface User {
   id: string;
-  name: string;
+  fullName: string;
+  mobileNumber: string;
   email: string;
-  role: 'user' | 'admin';
-  phone?: string;
+  token?: string;
 }
 
 export interface RegisterFormData {

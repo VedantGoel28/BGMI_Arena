@@ -1,10 +1,11 @@
 import { type FormEvent, type ReactElement } from 'react';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Lock, Phone, LoaderCircle } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import FormInput from '../components/FormInput';
+import { useAuth } from '../context/AuthContext';
 import type { LoginFormData } from '../types';
 
 const initialValues: LoginFormData = {
@@ -17,6 +18,10 @@ const LoginPage = (): ReactElement => {
   const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const successMessage = (location.state as { message?: string } | null)?.message ?? null;
 
   const validations = useMemo(() => {
     const nextErrors: Partial<Record<keyof LoginFormData, string>> = {};
@@ -38,7 +43,7 @@ const LoginPage = (): ReactElement => {
 
   const isFormValid = Object.keys(validations).length === 0;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     setErrors(validations);
 
@@ -47,10 +52,37 @@ const LoginPage = (): ReactElement => {
     }
 
     setIsSubmitting(true);
-    window.setTimeout(() => {
-      console.log('Login form submitted', formData);
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mobileNumber: formData.mobileNumber,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      login({
+        id: data.userId,
+        fullName: data.fullName,
+        mobileNumber: data.mobileNumber,
+        email: '',
+        token: data.token,
+      });
+      navigate('/modes');
+    } catch (error) {
+      setErrors((current) => ({
+        ...current,
+        password: error instanceof Error ? error.message : 'Login failed',
+      }));
+    } finally {
       setIsSubmitting(false);
-    }, 600);
+    }
   };
 
   const handleChange = (field: keyof LoginFormData, value: string): void => {
@@ -62,6 +94,11 @@ const LoginPage = (): ReactElement => {
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
       <div className="w-full max-w-xl">
         <Card title="Welcome back" description="Sign in with your mobile number and password to continue.">
+          {successMessage ? (
+            <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {successMessage}
+            </div>
+          ) : null}
           <form className="mt-6 space-y-4" onSubmit={handleSubmit} noValidate>
             <FormInput
               id="mobileNumber"
