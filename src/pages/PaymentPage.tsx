@@ -4,6 +4,7 @@ import Card from '../components/Card';
 import InfoRow from '../components/InfoRow';
 import Button from '../components/Button';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Clock, RefreshCw, CheckCircle2, ShieldAlert, QrCode } from 'lucide-react';
 
 interface PaymentPageLocationState {
@@ -46,7 +47,7 @@ const PaymentPage = (): ReactElement => {
     if (!registration && registrationId) {
       const fetchRegistration = async () => {
         try {
-          const res = await fetch(`http://localhost:8080/api/registrations/${registrationId}`);
+          const res = await fetch(`${API_BASE_URL}/api/registrations/${registrationId}`);
           if (res.ok) {
             const data = await res.json();
             setRegistration(data);
@@ -90,7 +91,7 @@ const PaymentPage = (): ReactElement => {
 
     try {
       if (user?.token && registrationId) {
-        const response = await fetch(`http://localhost:8080/api/registrations/${registrationId}/pay`, {
+        const response = await fetch(`${API_BASE_URL}/api/registrations/${registrationId}/pay`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

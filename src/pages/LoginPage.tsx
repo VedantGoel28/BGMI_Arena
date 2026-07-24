@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Card from '../components/Card';
 import FormInput from '../components/FormInput';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import type { LoginFormData } from '../types';
 
 const initialValues: LoginFormData = {
@@ -53,7 +54,7 @@ const LoginPage = (): ReactElement => {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

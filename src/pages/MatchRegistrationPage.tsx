@@ -7,6 +7,7 @@ import type { MatchMode } from '../types/matchMode';
 import type { RegistrationFormData, User } from '../types';
 import { matchModes } from '../data/matchModes';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 const initialFormData: RegistrationFormData = {
   ign: '',
@@ -38,7 +39,7 @@ const MatchRegistrationPage = (): ReactElement => {
       setLoadingUser(true);
       try {
         if (user.token) {
-          const response = await fetch('http://localhost:8080/api/user/me', {
+          const response = await fetch(`${API_BASE_URL}/api/user/me`, {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${user.token}`,
@@ -106,7 +107,7 @@ const MatchRegistrationPage = (): ReactElement => {
 
     try {
       if (user?.token) {
-        const response = await fetch('http://localhost:8080/api/registrations', {
+        const response = await fetch(`${API_BASE_URL}/api/registrations`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
