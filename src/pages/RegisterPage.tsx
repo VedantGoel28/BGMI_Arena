@@ -1,11 +1,10 @@
 import { type ReactElement, type FormEvent } from 'react';
 import { useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Lock, Mail, LoaderCircle, Phone, User } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import FormInput from '../components/FormInput';
-import { useAuth } from '../context/AuthContext';
 import type { RegisterFormData } from '../types';
 
 const initialValues: RegisterFormData = {
@@ -23,8 +22,6 @@ const RegisterPage = (): ReactElement => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
 
   const validations = useMemo(() => {
     const nextErrors: Partial<Record<keyof RegisterFormData, string>> = {};

@@ -21,8 +21,8 @@ export interface LoginFormData {
 
 export interface RegistrationFormData {
   ign?: string;
-  uid?: string;
-  level: number;
+  uid: string;
+  level: string;
 }
 
 export interface Match {
@@ -33,6 +33,25 @@ export interface Match {
   slot: string;
   prizePool: string;
   entryFee: number;
+}
+
+export interface BackendRegistration {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  mobileNumber: string;
+  ign?: string;
+  uid: string;
+  level: string;
+  matchModeId: string;
+  mode: string;
+  map: string;
+  entryFee: number;
+  paymentId?: string;
+  paymentStatus: 'PENDING' | 'COMPLETED' | 'FAILED';
+  matchStatus: 'WAITING_FOR_SLOT' | 'SLOT_ASSIGNED' | 'COMPLETED';
+  registeredAt: string;
 }
 
 export interface Registration {
