@@ -6,6 +6,7 @@ import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import MatchRegistrationPage from '../pages/MatchRegistrationPage';
+import PaymentPage from '../pages/PaymentPage';
 import ConfirmationPage from '../pages/ConfirmationPage';
 import UserDashboard from '../pages/UserDashboard';
 import MatchModesPage from '../pages/MatchModesPage';
@@ -44,6 +45,22 @@ const AppRoutes = (): ReactElement => {
         element={
           <MainLayout>
             <MatchRegistrationPage />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/payment/:registrationId"
+        element={
+          <MainLayout>
+            <PaymentPage />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/payment"
+        element={
+          <MainLayout>
+            <PaymentPage />
           </MainLayout>
         }
       />

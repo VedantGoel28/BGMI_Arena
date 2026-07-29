@@ -1,9 +1,18 @@
 import { type ReactElement } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Gamepad2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 
 const Navbar = (): ReactElement => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = (): void => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -18,12 +27,23 @@ const Navbar = (): ReactElement => {
         </Link>
 
         <nav className="flex items-center gap-3">
-          <Button variant="secondary" asChild>
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/register">Register</Link>
-          </Button>
+          {isAuthenticated ? (
+            <>
+              <span className="text-sm font-medium text-slate-700">{user?.mobileNumber}</span>
+              <Button variant="secondary" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="secondary" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/register">Register</Link>
+              </Button>
+            </>
+          )}
         </nav>
       </div>
     </header>
